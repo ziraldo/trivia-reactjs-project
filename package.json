@@ -1,0 +1,26 @@
+{
+  "name": "survey",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "ansi-styles": "^3.1.0",
+    "external-editor": "^2.0.4",
+    "fast-deep-equal": "^1.0.0",
+    "is-promise": "^2.1.0",
+    "js-base64": "^2.1.9",
+    "json-schema-traverse": "^0.3.1",
+    "mimic-fn": "^1.1.0",
+    "p-map": "^1.1.1",
+    "react": "^15.6.1",
+    "react-cookie": "^2.0.8",
+    "react-dom": "^15.6.1",
+    "react-scripts": "1.0.10",
+    "rx-lite-aggregates": "^4.0.8"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
