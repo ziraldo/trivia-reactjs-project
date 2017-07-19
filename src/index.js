@@ -71,7 +71,7 @@ class Question extends React.Component {
   }
 }
 
-class Survey extends React.Component {
+class Trivia extends React.Component {
   constructor() {
     super();
 
@@ -121,6 +121,10 @@ class Survey extends React.Component {
     });
   }
 
+  isTriviaComplete(currentStepNumber, questions) {
+    return currentStepNumber === questions.length;
+  }
+
   render() {
     if (this.state.questions.length <= 0) {
       return (
@@ -133,17 +137,23 @@ class Survey extends React.Component {
       );
     }
 
-    // Determine if the survey is complete
+    // Determine if the trivia is complete
     let status;
-    let currentQuestionID;
-    if (this.state.stepNumber === this.state.questions.length) {
+    let currentQuestion;
+    if (this.isTriviaComplete(this.state.stepNumber, this.state.questions)) {
       status = "Trivia Complete";
-      currentQuestionID = this.state.stepNumber - 1;
     } else {
       status = "Please make a selection";
-      currentQuestionID = this.state.stepNumber
+      const currentQuestionObj = this.state.questions[this.state.stepNumber];
+      currentQuestion = (
+        <Question
+            question={currentQuestionObj.question}
+            correct_answer={currentQuestionObj.correct_answer}
+            incorrect_answers={currentQuestionObj.incorrect_answers}
+            onClick={guess => this.handleClick(guess)}
+          />
+      );
     }
-    const currentQuestion = this.state.questions[currentQuestionID];
 
     // Determine if last answer was correct
     let answerStatus;
@@ -172,12 +182,7 @@ class Survey extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Question 
-            question={currentQuestion.question}
-            correct_answer={currentQuestion.correct_answer}
-            incorrect_answers={currentQuestion.incorrect_answers}
-            onClick={guess => this.handleClick(guess)} 
-          />
+          {currentQuestion}
         </div>
         <div className="game-info">
           <div>
@@ -197,4 +202,4 @@ class Survey extends React.Component {
 
 // ========================================
 
-ReactDOM.render(<Survey />, document.getElementById("root"));
+ReactDOM.render(<Trivia />, document.getElementById("root"));
