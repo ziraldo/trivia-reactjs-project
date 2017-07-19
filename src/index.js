@@ -170,9 +170,11 @@ class Trivia extends React.Component {
         msgStyle = "danger";
       }
       answerStatus = (
-          <Label bsStyle={msgStyle}>
-            {answerMsg}
-          </Label>
+          <h3>
+            <Label bsStyle={msgStyle}>
+              {answerMsg}
+            </Label>
+          </h3>
         );
     }
 
@@ -181,15 +183,15 @@ class Trivia extends React.Component {
 
     return (
       <div className="game">
+        <div>
+          {answerStatus}
+        </div>
         <div className="game-board">
           {currentQuestion}
         </div>
         <div className="game-info">
           <div>
             {status}
-          </div>
-          <div>
-            {answerStatus}
           </div>
           <div>
             Score: {score}/{numAnswered}
