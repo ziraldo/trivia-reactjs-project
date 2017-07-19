@@ -1,15 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
+
+import { Button } from 'react-bootstrap';
+import { Label } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
+
 import "./index.css";
 
-
-function Choice(props) {
-  return (
-    <button className="choice" onClick={props.onClick}>
-      {props.text}
-    </button>
-  );
-}
 
 function shuffleArray(input_array) {
   let array = input_array.slice()
@@ -29,6 +26,14 @@ function decodeHtml(html) {
     return txt.value;
 }
 
+function Choice(props) {
+  return (
+    <Button onClick={props.onClick} bsSize="large" block>
+      {props.text}
+    </Button>
+  )
+}
+
 class Question extends React.Component {
   renderChoice(guess) {
     return (
@@ -41,24 +46,26 @@ class Question extends React.Component {
 
   render() {
     const correct_answer = [(
-      <div className="choice">
+      <div className="choice" key={this.props.correct_answer} >
         {this.renderChoice(decodeHtml(this.props.correct_answer))}
       </div>
     )]
     const incorrect_answers = this.props.incorrect_answers.map((answer) =>
-      <div className="choice">
+      <div className="choice" key={answer}>
         {this.renderChoice(decodeHtml(answer))}
       </div>
     )
 
     let question = decodeHtml(this.props.question)
     const randomizedChoices = shuffleArray(correct_answer.concat(incorrect_answers));
+    const title = (
+      <h3>{question}</h3>
+    );
     return (
       <div>
-        <div className="question">
-          {question}
-        </div>
-        {randomizedChoices}
+        <Panel header={title} bsStyle="primary">
+          {randomizedChoices}
+        </Panel>
       </div>
     );
   }
@@ -78,7 +85,7 @@ class Survey extends React.Component {
 
   componentWillMount() {
     var that = this;
-    const url = 'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple'
+    const url = 'https://opentdb.com/api.php?amount=10&type=multiple'
 
     fetch(url)
       .then(function(response) {
@@ -102,7 +109,7 @@ class Survey extends React.Component {
 
     // Check if question was answered correctly
     let currentScore = this.state.score;
-    if (guess === decodeHtml(currentQuestion.correct_answer)) {
+    if (decodeHtml(guess) === decodeHtml(currentQuestion.correct_answer)) {
       currentScore++;
     }
 
@@ -129,8 +136,8 @@ class Survey extends React.Component {
     // Determine if the survey is complete
     let status;
     let currentQuestionID;
-    if (this.state.stepNumber >= this.state.questions.length) {
-      status = "Survey Complete";
+    if (this.state.stepNumber === this.state.questions.length) {
+      status = "Trivia Complete";
       currentQuestionID = this.state.stepNumber - 1;
     } else {
       status = "Please make a selection";
@@ -138,17 +145,25 @@ class Survey extends React.Component {
     }
     const currentQuestion = this.state.questions[currentQuestionID];
 
-
     // Determine if last answer was correct
     let answerStatus;
     if (this.state.stepNumber > 0) {
-      if (this.state.guesses[this.state.stepNumber - 1] ===
-          this.state.questions[this.state.stepNumber - 1].correct_answer) {
-        answerStatus = "Correct";
+      const previousGuess = decodeHtml(this.state.guesses[this.state.stepNumber - 1]);
+      const previousCorrectAnswer = decodeHtml(this.state.questions[this.state.stepNumber - 1].correct_answer);
+      let answerMsg;
+      let msgStyle;
+      if (previousGuess === previousCorrectAnswer) {
+        answerMsg = "Correct: " + previousCorrectAnswer;
+        msgStyle = "success";
       } else {
-        answerStatus = "Wrong, correct answer is: " + 
-          this.state.questions[this.state.stepNumber - 1].correct_answer;
+        answerMsg = "Wrong, correct answer is: " + previousCorrectAnswer;
+        msgStyle = "danger";
       }
+      answerStatus = (
+          <Label bsStyle={msgStyle}>
+            {answerMsg}
+          </Label>
+        );
     }
 
     const score = this.state.score;
