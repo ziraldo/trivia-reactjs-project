@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { Button } from 'react-bootstrap';
 import { Label } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
+import { ListGroupItem } from 'react-bootstrap';
 import { Panel } from 'react-bootstrap';
 
 import "./index.css";
@@ -28,9 +29,9 @@ function decodeHtml(html) {
 
 function Choice(props) {
   return (
-    <Button onClick={props.onClick} bsSize="large" block>
+    <ListGroupItem onClick={props.onClick}>
       {props.text}
-    </Button>
+    </ListGroupItem>
   )
 }
 
@@ -40,20 +41,17 @@ class Question extends React.Component {
       <Choice
         text = {guess}
         onClick = {() => this.props.onClick(guess)}
+        key = {guess}
       />
     );
   }
 
   render() {
     const correct_answer = [(
-      <div className="choice" key={this.props.correct_answer} >
-        {this.renderChoice(decodeHtml(this.props.correct_answer))}
-      </div>
+      this.renderChoice(decodeHtml(this.props.correct_answer))
     )]
     const incorrect_answers = this.props.incorrect_answers.map((answer) =>
-      <div className="choice" key={answer}>
-        {this.renderChoice(decodeHtml(answer))}
-      </div>
+      this.renderChoice(decodeHtml(answer))
     )
 
     let question = decodeHtml(this.props.question)
@@ -64,7 +62,9 @@ class Question extends React.Component {
     return (
       <div>
         <Panel header={title} bsStyle="primary">
-          {randomizedChoices}
+          <ListGroup>
+            {randomizedChoices}
+          </ListGroup>
         </Panel>
       </div>
     );
