@@ -16,15 +16,15 @@ class Question extends React.Component {
   }
 
   render() {
-    const correct_answer = [(
-      this.renderChoice(decodeHtml(this.props.correct_answer))
+    const correctAnswer = [(
+      this.renderChoice(decodeHtml(this.props.correctAnswer))
     )]
-    const incorrect_answers = this.props.incorrect_answers.map((answer) =>
+    const incorrectAnswers = this.props.incorrectAnswers.map((answer) =>
       this.renderChoice(decodeHtml(answer))
     )
 
     let question = decodeHtml(this.props.question)
-    const randomizedChoices = shuffleArray(correct_answer.concat(incorrect_answers));
+    const randomizedChoices = shuffleArray(correctAnswer.concat(incorrectAnswers));
     const title = (
       <h3>{question}</h3>
     );

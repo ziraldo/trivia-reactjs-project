@@ -1,6 +1,7 @@
 import React from "react";
 import { Label } from 'react-bootstrap';
 
+import Progress from './Progress'
 import Question from './Question'
 
 class Trivia extends React.Component {
@@ -32,53 +33,6 @@ class Trivia extends React.Component {
       });
   }
 
-  handleClick(guess) {
-    const currentQuestion = this.state.questions[this.state.stepNumber];
-
-    // Check if question was answered correctly
-    let currentScore = this.state.score;
-    if (decodeHtml(guess) === decodeHtml(currentQuestion.correct_answer)) {
-      currentScore++;
-    }
-
-    // Update the state
-    this.setState({
-      guesses: this.state.guesses.concat(guess),
-      stepNumber: this.state.stepNumber + 1,
-      score: currentScore
-    });
-  }
-
-  isTriviaComplete(currentStepNumber, questions) {
-    return currentStepNumber === questions.length;
-  }
-
-  getAnswerStatus(state) {
-    let answerStatus;
-    if (state.stepNumber > 0) {
-      // Determine if last answer was correct
-      const previousGuess = decodeHtml(state.guesses[state.stepNumber - 1]);
-      const previousCorrectAnswer = decodeHtml(state.questions[state.stepNumber - 1].correct_answer);
-      let answerMsg;
-      let msgStyle;
-      if (previousGuess === previousCorrectAnswer) {
-        answerMsg = "Correct: " + previousCorrectAnswer;
-        msgStyle = "success";
-      } else {
-        answerMsg = "Wrong, correct answer is: " + previousCorrectAnswer;
-        msgStyle = "danger";
-      }
-      answerStatus = (
-        <h3>
-          <Label bsStyle={msgStyle}>
-            {answerMsg}
-          </Label>
-        </h3>
-      );
-    }
-    return answerStatus;
-  }
-
   render() {
     // Return empty board if we have no questions
     if (this.state.questions.length <= 0) {
@@ -93,44 +47,79 @@ class Trivia extends React.Component {
     }
 
     // Determine if the trivia is complete
-    let status;
     let currentQuestion;
-    if (this.isTriviaComplete(this.state.stepNumber, this.state.questions)) {
-      status = "Trivia Complete";
-    } else {
-      status = "Please make a selection";
+    if (this.state.stepNumber !== this.state.questions.length) {
       const currentQuestionObj = this.state.questions[this.state.stepNumber];
       currentQuestion = (
         <Question
             question={currentQuestionObj.question}
-            correct_answer={currentQuestionObj.correct_answer}
-            incorrect_answers={currentQuestionObj.incorrect_answers}
+            correctAnswer={currentQuestionObj.correct_answer}
+            incorrectAnswers={currentQuestionObj.incorrect_answers}
             onClick={guess => this.handleClick(guess)}
           />
       );
     }
 
-    const answerStatus = this.getAnswerStatus(this.state);
-    const score = this.state.score;
-    const numAnswered = this.state.stepNumber;
-
     return (
       <div className="game">
-        <div>
-          {answerStatus}
-        </div>
         <div className="game-board">
           {currentQuestion}
         </div>
         <div className="game-info">
-          <div>
-            {status}
+          <div className="progress">
+            <Progress
+              currentStep={this.state.stepNumber}
+              totalSteps={this.state.questions.length}
+            />
           </div>
           <div>
-            Score: {score}/{numAnswered}
+            {this.state.guesses}
+          </div>
+          <div>
+            Score: {this.state.score}/{this.state.stepNumber}
           </div>
         </div>
       </div>
+    );
+  }
+
+  handleClick(guess) {
+    const currentQuestion = this.state.questions[this.state.stepNumber];
+    const decodedGuess = decodeHtml(guess);
+    const decodedCorrectAnswer = decodeHtml(currentQuestion.correct_answer);
+
+    // Check if question was answered correctly
+    let currentScore = this.state.score;
+    if (decodedGuess === decodedCorrectAnswer) {
+      currentScore++;
+    }
+
+    let guessStatus = this.getGuessStatus(decodedGuess, decodedCorrectAnswer);
+
+    // Update the state
+    this.setState({
+      guesses: this.state.guesses.concat(guessStatus),
+      stepNumber: this.state.stepNumber + 1,
+      score: currentScore
+    });
+  }
+
+  getGuessStatus(guess, correctAnswer) {
+    let answerMsg;
+    let msgStyle;
+    if (guess === correctAnswer) {
+      answerMsg = "Correct: " + correctAnswer;
+      msgStyle = "success";
+    } else {
+      answerMsg = "Wrong, correct answer is: " + correctAnswer;
+      msgStyle = "danger";
+    }
+    return (
+      <h3 key={answerMsg}>
+        <Label bsStyle={msgStyle}>
+          {answerMsg}
+        </Label>
+      </h3>
     );
   }
 }

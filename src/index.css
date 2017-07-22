@@ -15,5 +15,6 @@ h2 {
 }
 
 .game-info {
-  margin-left: 20px;
+  margin: auto;
+  width: 50%;
 }
