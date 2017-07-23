@@ -5,26 +5,41 @@ import { Panel } from 'react-bootstrap';
 
 class Question extends React.Component {
 
-  renderChoice(guess) {
+  renderChoice(guess, correctAnswer, choice) {
+    let style = "";
+    if (!choice || (guess !== correctAnswer && guess !== choice)) {
+        return (
+            <Choice
+                text = {guess}
+                onClick = {() => this.props.onClick(guess)}
+                key = {guess}
+            />
+        );
+    } else if (guess === correctAnswer){
+        style = "success";
+    } else if (guess === choice) {
+        style = "danger";
+    }
     return (
-      <Choice
-        text = {guess}
-        onClick = {() => this.props.onClick(guess)}
-        key = {guess}
-      />
+        <StyledChoice
+            text = {guess}
+            onClick = {() => this.props.onClick(guess)}
+            key = {guess}
+            bsStyle = {style}
+        />
     );
   }
 
   render() {
-    const correctAnswer = [(
-      this.renderChoice(decodeHtml(this.props.correctAnswer))
-    )]
-    const incorrectAnswers = this.props.incorrectAnswers.map((answer) =>
-      this.renderChoice(decodeHtml(answer))
+    const question = decodeHtml(this.props.question)
+    const choices = this.props.choices.map((choice) =>
+      this.renderChoice(
+        decodeHtml(choice),
+        decodeHtml(this.props.correctAnswer),
+        decodeHtml(this.props.guess)
+      )
     )
 
-    let question = decodeHtml(this.props.question)
-    const randomizedChoices = shuffleArray(correctAnswer.concat(incorrectAnswers));
     const title = (
       <h3>{question}</h3>
     );
@@ -32,7 +47,7 @@ class Question extends React.Component {
       <div>
         <Panel header={title} bsStyle="primary">
           <ListGroup>
-            {randomizedChoices}
+            {choices}
           </ListGroup>
         </Panel>
       </div>
@@ -41,27 +56,28 @@ class Question extends React.Component {
 }
 
 function Choice(props) {
-  return (
-    <ListGroupItem onClick={props.onClick}>
-      {props.text}
-    </ListGroupItem>
-  )
+    return (
+        <ListGroupItem
+            onClick={props.onClick}
+        >
+            {props.text}
+        </ListGroupItem>
+    );
+}
+
+function StyledChoice(props) {
+    return (
+        <ListGroupItem
+            onClick={props.onClick}
+            bsStyle={props.bsStyle}
+        >
+            {props.text}
+        </ListGroupItem>
+    );
 }
 
 // ==============================================
 // Helper functions
-
-function shuffleArray(input_array) {
-  let array = input_array.slice()
-  let i = array.length - 1;
-  for (; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-  return array;
-}
 
 function decodeHtml(html) {
     var txt = document.createElement("textarea");
