@@ -7,14 +7,24 @@ h2 {
 }
 
 .game {
-  text-align: center;
+   text-align: center;
 }
 
 .game-board {
-  display: inline-block;
+  margin: auto;
+  text-align: center;
+}
+
+.question {
+  text-align: left;
 }
 
 .game-info {
   margin: auto;
   width: 50%;
+}
+
+.navigation {
+  margin: auto;
+  width: 75%
 }

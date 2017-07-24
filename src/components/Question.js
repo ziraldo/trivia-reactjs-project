@@ -5,54 +5,53 @@ import { Panel } from 'react-bootstrap';
 
 class Question extends React.Component {
 
-  renderChoice(guess, correctAnswer, choice) {
-    let style = "";
-    if (!choice || (guess !== correctAnswer && guess !== choice)) {
+    render() {
+        const question = this.props.question;
+        const choices = this.props.choices.map((choice) =>
+            this.renderChoice(
+                choice,
+                this.props.correctAnswer,
+                this.props.guess
+            )
+        )
+
         return (
-            <Choice
+            <div className="question">
+                <Panel header={(<h3>{question}</h3>)} bsStyle="primary">
+                <ListGroup>
+                    {choices}
+                </ListGroup>
+                </Panel>
+            </div>
+        );
+    }
+
+    renderChoice(guess, correctAnswer, choice) {
+        const onClick = (choice) ? null : () => this.props.onClick(guess);
+
+        // No style if no choice has been made or
+        // the choice was correct or incorrect
+        if (!choice || (guess !== correctAnswer && guess !== choice)) {
+            return (
+                <Choice
+                    text = {guess}
+                    onClick = {onClick}
+                    key = {guess}
+                />
+            );
+        }
+
+        // We either want to style the correct answer or an incorrect choice
+        const style = (guess === correctAnswer) ? "success" : "danger";
+        return (
+            <StyledChoice
                 text = {guess}
-                onClick = {() => this.props.onClick(guess)}
+                onClick = {onClick}
                 key = {guess}
+                bsStyle = {style}
             />
         );
-    } else if (guess === correctAnswer){
-        style = "success";
-    } else if (guess === choice) {
-        style = "danger";
     }
-    return (
-        <StyledChoice
-            text = {guess}
-            onClick = {() => this.props.onClick(guess)}
-            key = {guess}
-            bsStyle = {style}
-        />
-    );
-  }
-
-  render() {
-    const question = decodeHtml(this.props.question)
-    const choices = this.props.choices.map((choice) =>
-      this.renderChoice(
-        decodeHtml(choice),
-        decodeHtml(this.props.correctAnswer),
-        decodeHtml(this.props.guess)
-      )
-    )
-
-    const title = (
-      <h3>{question}</h3>
-    );
-    return (
-      <div>
-        <Panel header={title} bsStyle="primary">
-          <ListGroup>
-            {choices}
-          </ListGroup>
-        </Panel>
-      </div>
-    );
-  }
 }
 
 function Choice(props) {
@@ -74,15 +73,6 @@ function StyledChoice(props) {
             {props.text}
         </ListGroupItem>
     );
-}
-
-// ==============================================
-// Helper functions
-
-function decodeHtml(html) {
-    var txt = document.createElement("textarea");
-    txt.innerHTML = html;
-    return txt.value;
 }
 
 export default Question
