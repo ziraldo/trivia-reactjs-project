@@ -33,22 +33,23 @@ class Trivia extends React.Component {
 
     renderNav() {
         return (
-            <Navbar collapseOnSelect>
+            <Navbar>
                 <Navbar.Header>
-                    <Navbar.Toggle />
                     <Navbar.Brand>
                         <a href="/">Andrew's Trivia</a>
                     </Navbar.Brand>
+                    <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
                         <NavItem eventKey={1} onClick={() => this.generateNewQuiz()}>New Quiz</NavItem>
                     </Nav>
                     <Nav pullRight>
-                        <Navbar.Text>Total Questions: {this.state.stats.totalQuestions}</Navbar.Text>
-                        <Navbar.Text>Total Correct: {this.state.stats.totalCorrectAnswers}</Navbar.Text>
                         <NavItem eventKey={1} onClick={() => this.clearStats()}>Reset Stats</NavItem>
                     </Nav>
+                    <Navbar.Text pullRight>
+                        Total Score: {this.state.stats.totalCorrectAnswers} / {this.state.stats.totalQuestions}
+                    </Navbar.Text>
                 </Navbar.Collapse>
             </Navbar>
         );
