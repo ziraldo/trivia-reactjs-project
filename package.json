@@ -13,7 +13,7 @@
     "p-map": "^1.1.1",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.1",
-    "react-cookie": "^2.0.8",
+    "react-cookies": "^0.1.0",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.10",
     "rx-lite-aggregates": "^4.0.8"
