@@ -24,8 +24,8 @@ spec:
         tier: frontend
     spec:
       containers:
-        - image: "ziraldo/trivia-reactjs-project:1.0.0"
-          name: nginx
+        - image: "ziraldo/trivia:1.0.0"
+          name: trivia
           imagePullPolicy: Never
           lifecycle:
             preStop:
