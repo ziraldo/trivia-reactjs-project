@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: trivia
+    tier: frontend
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  template:
+    metadata:
+      labels:
+        app: trivia
+        tier: frontend
+    spec:
+      containers:
+        - image: "ziraldo/trivia-reactjs-project:1.0.0"
+          name: nginx
+          imagePullPolicy: Never
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/usr/sbin/nginx","-s","quit"]
